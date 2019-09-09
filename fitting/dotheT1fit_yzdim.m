@@ -1,10 +1,10 @@
-function [T1out,M0out] = dotheT1fit_zdim(input,mask,fa,tr)
+function [T1out,M0out] = dotheT1fit_yzdim(input,mask,fa,tr)
 
 % performs the T2 map fitting for 1 slice
 
-[~,dimz] = size(input);
-T1map = zeros(dimz,1);
-M0map = zeros(dimz,1);
+[~,dimy,dimz] = size(input);
+T1map = zeros(dimy,dimz,1);
+M0map = zeros(dimy,dimz,1);
 
     function [F,J] = FJfun(x, xdata)
         % Fitting function
@@ -21,32 +21,36 @@ M0map = zeros(dimz,1);
         
     end
 
-fitfun = @FJfun;
+fitfun = @Hfun;        % or FJfun for fitting with Jacobian
 
 % starting value
-x0 = [10000 200];
+x0 = [max(input(:)) 500];
 
 % flip angles
 fa = [0,fa]';
 
-% no display output
-opt = optimoptions('lsqcurvefit','SpecifyObjectiveGradient',true,'Diagnostics','off','Display','off','MaxIterations',50);
+% no display output, fitting with 'true' or without 'false' Jacobian
+opt = optimoptions('lsqcurvefit','SpecifyObjectiveGradient',false,'Diagnostics','off','Display','off','MaxIterations',50);
 
-parfor k=1:dimz
-    % for all z-coordinates
+for j=1:dimy
     
-    if mask(k) == 1
-        % only fit when mask value indicates valid data point
+    parfor k=1:dimz
+        % for all z-coordinates
         
-        % pixel value as function of alpha
-        ydata = double([0;squeeze(input(:,k))]);
-        
-        % do the fit
-        x = lsqcurvefit(fitfun,[max(ydata(:)),500],fa,ydata,[0 0],[32767 4000],opt);
-        
-        % make the maps
-        T1map(k)=x(2);
-        M0map(k)=x(1);
+        if mask(k) == 1
+            % only fit when mask value indicates valid data point
+            
+            % pixel value as function of alpha
+            ydata = double([0;squeeze(input(:,j,k))]);
+            
+            % do the fit
+            x = lsqcurvefit(fitfun,x0,fa,ydata,[0 0],[Inf 4000],opt);
+            
+            % make the maps
+            T1map(j,k)=x(2);
+            M0map(j,k)=x(1);
+            
+        end
         
     end
     
