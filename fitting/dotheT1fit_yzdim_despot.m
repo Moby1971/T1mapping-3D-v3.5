@@ -27,30 +27,31 @@ M0map = zeros(dimy,dimz,1);
 x0 = [max(input(:)) 500];
 
 % flip angles
-fa = fa*pi/180;
+fa = fa'*pi/180;
+lfa = length(fa);
 
 % no display output, fitting with 'true' or without 'false' Jacobian
 %opt = optimoptions('lsqcurvefit','SpecifyObjectiveGradient',false,'Diagnostics','off','Display','off','MaxIterations',50);
+
 
 for j=1:dimy
     
     parfor k=1:dimz
         % for all z-coordinates
         
-        if mask(k) == 1
+        if mask(j,k) == 1
             % only fit when mask value indicates valid data point
             
             % pixel value as function of alpha
-            y = squeeze(input(:,j,k))./sin(fa);
-            x = squeeze(input(:,j,k))./tan(fa);
+            y = (squeeze(input(:,j,k))./sin(fa));
+            x = [ones(lfa,1),squeeze(input(:,j,k))./tan(fa)];
             
-            
-            % do the fit
-            x = lsqcurvefit(fitfun,x0,x,y,[0 0],[Inf 4000],opt);
+            % do the linear regression
+            b = x\y;
             
             % make the maps
-            T1map(j,k)=-tr/log(x(1));
-            M0map(j,k)=x(2)/(1-x(1));
+            T1map(j,k)=-tr/log(b(2));
+            M0map(j,k)=b(1)/(1-b(2));
             
         end
         
