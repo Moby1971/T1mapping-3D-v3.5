@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      2050,         68]
-NotebookOptionsPosition[      1659,         54]
-NotebookOutlinePosition[      1998,         69]
-CellTagsIndexPosition[      1955,         66]
+NotebookDataLength[      2085,         68]
+NotebookOptionsPosition[      1694,         54]
+NotebookOutlinePosition[      2033,         69]
+CellTagsIndexPosition[      1990,         66]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -27,24 +27,24 @@ Cell[BoxData[
       StyleBox["Sin", "Text"], 
       StyleBox[
        RowBox[{"(", "\[Alpha]", ")"}], "Text"], 
+      StyleBox[" ", "Text"], 
       RowBox[{"(", 
        RowBox[{"1", "-", 
         SuperscriptBox["e", 
          RowBox[{
           RowBox[{"-", "TR"}], "/", "T1"}]]}], ")"}]}], 
-     RowBox[{
-      RowBox[{"(", 
-       RowBox[{"1", "-", 
-        RowBox[{"Cos", 
-         RowBox[{"(", "\[Alpha]", ")"}]}]}], ")"}], " ", 
-      SuperscriptBox["e", 
-       RowBox[{
-        RowBox[{"-", "TR"}], "/", "T1"}]]}]]}]}], "Text"]], "DisplayFormula",
+     RowBox[{"1", "-", 
+      RowBox[{"Cos", 
+       RowBox[{"(", "\[Alpha]", ")"}], " ", 
+       SuperscriptBox["e", 
+        RowBox[{
+         RowBox[{"-", "TR"}], "/", "T1"}]]}]}]]}]}], 
+  "Text"]], "DisplayFormula",
  CellChangeTimes->{{3.77699876108882*^9, 3.776998771075227*^9}, {
   3.776998832828*^9, 3.776998980971924*^9}, {3.776999012779325*^9, 
   3.776999023544866*^9}, {3.7769992939101133`*^9, 3.7769992966695347`*^9}, {
-  3.776999328788535*^9, 
-  3.7769993345554867`*^9}},ExpressionUUID->"c29aa23d-7136-4da3-b10f-\
+  3.776999328788535*^9, 3.7769993345554867`*^9}, {3.7771916055194263`*^9, 
+  3.777191642594982*^9}},ExpressionUUID->"c29aa23d-7136-4da3-b10f-\
 7d4b81a9998b"],
 
 Cell[BoxData[""], "Input",
@@ -68,8 +68,8 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[558, 20, 940, 27, 52, "DisplayFormula",ExpressionUUID->"c29aa23d-7136-4da3-b10f-7d4b81a9998b"],
-Cell[1501, 49, 154, 3, 30, "Input",ExpressionUUID->"c7fdcd2b-7c55-4c50-b0bf-6b9e53b46155"]
+Cell[558, 20, 975, 27, 52, "DisplayFormula",ExpressionUUID->"c29aa23d-7136-4da3-b10f-7d4b81a9998b"],
+Cell[1536, 49, 154, 3, 30, "Input",ExpressionUUID->"c7fdcd2b-7c55-4c50-b0bf-6b9e53b46155"]
 }
 ]
 *)

@@ -1,30 +1,30 @@
-function export_gif_t2(gifexportpath,t2map,m0map,tag,T2MapScale,t2cmap,aspect)
+function export_gif_3DT1(gifexportpath,t1map,m0map,tag,T1MapScale,t1cmap,aspect)
 
-% Exports t2maps and m0maps to animated gif
+% Exports 3D t1maps and m0maps to animated gif
 
-[number_of_images,dimx,dimy] = size(t2map);
+[number_of_images,dimx,dimy] = size(t1map);
 
 % increase the size of the matrix to make the exported images bigger
 
-numrows = 2*dimx;
-numcols = 2*round(dimy/aspect);
+numrows = 4*dimx;
+numcols = 4*round(dimy/aspect);
 
-delay_time = 2/number_of_images;  % show all gifs in 2 seconds
+delay_time = 5/number_of_images;  % show all gifs in 2 seconds
 
 
-% Export the T2 maps to gifs
+% Export the T1 maps to gifs
 
 for idx = 1:number_of_images
     
     % because the color maps are arrays of size 64
     % the t2map needs to be mapped onto the range of [0, 63] and cast in an
     % unsigned integer 8 for gif export
-    image = uint8(round((63/T2MapScale)*resizem(squeeze(t2map(idx,:,:)),[numrows numcols])));
+    image = uint8(round((63/T1MapScale)*resizem(squeeze(t1map(idx,:,:)),[numrows numcols])));
     
     if idx == 1
-        imwrite(image,t2cmap,[gifexportpath,'/t2map-',tag,'.gif'],'DelayTime',delay_time,'LoopCount',inf);
+        imwrite(rot90(image),t1cmap,[gifexportpath,'/T1map-',tag,'.gif'],'DelayTime',delay_time,'LoopCount',inf);
     else
-        imwrite(image,t2cmap,[gifexportpath,'/t2map-',tag,'.gif'],'WriteMode','append','DelayTime',delay_time);
+        imwrite(rot90(image),t1cmap,[gifexportpath,'/T1map-',tag,'.gif'],'WriteMode','append','DelayTime',delay_time);
     end
 end
         
@@ -42,9 +42,9 @@ for idx = 1:number_of_images
     image = uint8(round((255/m0scale)*resizem(squeeze(m0map(idx,:,:)),[numrows numcols])));
     
     if idx == 1
-        imwrite(image,[gifexportpath,'/m0map-',tag,'.gif'],'DelayTime',delay_time,'LoopCount',inf);
+        imwrite(rot90(image),[gifexportpath,'/M0map-',tag,'.gif'],'DelayTime',delay_time,'LoopCount',inf);
     else
-        imwrite(image,[gifexportpath,'/m0map-',tag,'.gif'],'WriteMode','append','DelayTime',delay_time);
+        imwrite(rot90(image),[gifexportpath,'/M0map-',tag,'.gif'],'WriteMode','append','DelayTime',delay_time);
     end
 end
          

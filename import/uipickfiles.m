@@ -1471,7 +1471,8 @@ im = [ ...
 	1 2 2 2 2 2 2 2 2 2 2 1;
 	1 2 2 2 2 2 2 2 2 2 2 1;
 	1 1 1 1 1 1 1 1 1 1 1 1];
-cmap = [0 0 0;255 220 130;255 255 255]/255;
+%cmap = [0 0 0;255 220 130;255 255 255]/255;
+cmap = [0 0 0;0 114 189;255 255 255]/255;
 fid = fopen(icon_path,'w');
 if fid > 0
 	fclose(fid);
@@ -1489,12 +1490,12 @@ fsdata.style = folder_style_pref;
 % try to create it.  If that fails set style = 2.
 if fsdata.style == 1
 	icon_path = fullfile(prefdir,'uipickfiles_folder_icon.png');
-	if ~exist(icon_path,'file')
+	%if ~exist(icon_path,'file')
 		success = generate_folder_icon(icon_path);
-		if ~success
-			fsdata.style = 2;
-		end
-	end
+		%if ~success
+		%	fsdata.style = 2;
+		%end
+	%end
 end
 % Set pre and post fields.
 if fsdata.style == 1
