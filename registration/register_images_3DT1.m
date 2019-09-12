@@ -1,4 +1,4 @@
-function images_out = register_images(app,images_in)
+function images_out = register_images_3DT1(app,images_in)
 
 
 [ne,ns,~,~] = size(images_in);
