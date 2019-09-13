@@ -1,4 +1,4 @@
-function dicom_header = generate_dicomheader_t2(parameters,i,dimx,dimy,dcmid)
+function dicom_header = generate_dicomheader_3DT1(parameters,i,dimx,dimy,dcmid)
 
 %
 % GENERATES DICOM HEADER FOR EXPORT
