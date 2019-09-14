@@ -1,27 +1,23 @@
-function images_out = register_images_3DT1(app,images_in)
+function images_out = register_images_3DT1(app,images_in,maxidx)
 
 
-[ne,ns,~,~] = size(images_in);
+nfa = size(images_in,1);
 
 [optimizer, metric] = imregconfig('multimodal');
 
-norm = ne*(ns-1);
+image0 = squeeze(images_in(maxidx,:,:,:));
 
-for i = 1:ne
-    
-    for j = 2:ns
+for i = 1:nfa
         
-        image0 = squeeze(images_in(1,j,:,:));
-        image1 = squeeze(images_in(i,j,:,:));
+    if i ~= maxidx
         
-        max0 = max(image0(:));
-        max1 = max(image1(:));
+        image1 = squeeze(images_in(i,:,:,:));
         
-        [image2] = imregister(image1/max1,image0/max0,'similarity',optimizer, metric,'DisplayOptimization',0);
+        [image2] = imregister(image1,image0,'similarity',optimizer, metric,'DisplayOptimization',0);
         
-        images_in(i,j,:,:) = image2*max1;
+        images_in(i,:,:,:) = image2;
         
-        app.RegProgressGauge.Value = round(100*((i-1)*(ns-1) + (j-1))/norm);
+        app.RegistrationProgressGauge.Value = round(100*i/nfa);
         drawnow;
         
     end
