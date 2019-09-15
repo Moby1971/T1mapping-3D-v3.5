@@ -27,7 +27,7 @@ for idx = 1:number_of_images
         imwrite(rot90(image),t1cmap,[gifexportpath,'/T1map-',tag,'.gif'],'WriteMode','append','DelayTime',delay_time);
     end
 end
-        
+
 
 % Export the M0 maps to GIF
 
@@ -47,7 +47,7 @@ for idx = 1:number_of_images
         imwrite(rot90(image),[gifexportpath,'/M0map-',tag,'.gif'],'WriteMode','append','DelayTime',delay_time);
     end
 end
-         
 
 
-end                 
+
+end
