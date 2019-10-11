@@ -7,9 +7,9 @@ function export_dicom_3DT1(directory,m0map,t1map,parameters,tag)
 %if (~exist(folder_name, 'dir')); mkdir(folder_name); end
 %delete([folder_name,'/*']);
 
-folder_name = [directory,['/T1map-DICOM-',tag]];
+folder_name = [directory,[filesep,'T1map-DICOM-',tag]];
 if (~exist(folder_name, 'dir')); mkdir(folder_name); end
-delete([folder_name,'/*']);
+delete([folder_name,filesep,'*']);
 
 [nr_images,dimx,dimy] = size(t1map);
 
@@ -39,7 +39,7 @@ for i=1:nr_images
     dcm_header = generate_dicomheader_3DT1(parameters,i,dimx,dimy,dcmid);
     fn = ['0000',num2str(i)];
     fn = fn(size(fn,2)-4:size(fn,2));
-    fname = [directory,'/T1map-DICOM-',tag,'/T1map_',fn,'.dcm'];
+    fname = [directory,filesep,'T1map-DICOM-',tag,filesep,'T1map_',fn,'.dcm'];
     image = rot90(squeeze(cast(round(t1map(i,:,:)),'uint16')));
     dicomwrite(image, fname, dcm_header);
 end
