@@ -1,20 +1,20 @@
-function [T1out,M0out] = dotheT1fit_yzdim_despot(input,mask,fa,tr)
+function [T1out,M0out] = dotheT1fit_despot(input,mask,fa,tr)
 
 % performs the T2 map fitting for 1 slice
 
-[~,dimy,dimz] = size(input);
-T1map = zeros(dimy,dimz,1);
-M0map = zeros(dimy,dimz,1);
+[~,dimx,dimy] = size(input);
+T1map = zeros(dimx,dimy);
+M0map = zeros(dimx,dimy);
 
 % flip angles
 fa = fa'*pi/180;
 lfa = length(fa);
 
 
-for j=1:dimy
-    % for all y-coordinates
-    parfor k=1:dimz
-        % for all z-coordinates
+for j=1:dimx
+    % for all x-coordinates
+    parfor k=1:dimy
+        % for all y-coordinates
         
         if mask(j,k) == 1
             % only fit when mask value indicates valid data point

@@ -1,38 +1,54 @@
-function dicom_header = generate_dicomheader_3DT1(parameters,i,dimx,dimy,dcmid)
+function dicom_header = generate_dicomheader_3DT1(parameters,dimx,dimy,i,j,dcmid,cnt)
 
 %
-% GENERATES DICOM HEADER FOR EXPORT
+% GENERATES DICOM HEADER FOR EXPORT IF NO DICOM INFORMATION IS AVAILABLE
 %
 % parameters = parameters from MRD file
-% i = current image/slice number
+% i = current slice number
+% J = current frame / tempooral position
 % dimy = y dimension (phase encoding, views)
 % dimx = x dimension (readout, samples)
 %
-%
 
+% Study name
 studyname = str2num(parameters.filename(end-9:end-6));
 
-aspectratio = parameters.FOVf/8;  % apect ratio, needs to be checked
-acq_dur = parameters.NO_VIEWS * parameters.tr * parameters.NO_AVERAGES/1000;   % acquisition time in seconds
+% Phase orientation FOV dimensions correction
+if isfield(parameters, 'PHASE_ORIENTATION')
+    if parameters.PHASE_ORIENTATION == 1
+        FOVx = parameters.FOV3D(2);
+        FOVy = parameters.FOV3D(1);
+    else
+        FOVx = parameters.FOV3D(1);
+        FOVy = parameters.FOV3D(2);
+        
+    end
+end
+pixelx = FOVx/dimx;
+pixely = FOVy/dimy;
 
-pixelx = aspectratio*parameters.FOV/dimx;
-pixely = parameters.FOV/dimy;
+% Estimated acquistion time
+acq_dur = parameters.NO_ECHOES * parameters.NO_VIEWS * parameters.NO_VIEWS_2 * parameters.tr * parameters.NO_AVERAGES/1000;   % acquisition time in seconds
 
+% Filename
 fn = ['0000',num2str(i)];
 fn = fn(size(fn,2)-4:size(fn,2));
-fname = ['cine_',fn,'.dcm'];
+fname = ['T1map_',fn,'.dcm'];
 
+% Date
 dt = datetime(parameters.date,'InputFormat','dd-MMM-yyyy HH:mm:ss');
 year = num2str(dt.Year);
 month = ['0',num2str(dt.Month)]; month = month(end-1:end);
 day = ['0',num2str(dt.Day)]; day = day(end-1:end);
 date = [year,month,day];
 
+% Time
 hour = ['0',num2str(dt.Hour)]; hour = hour(end-1:end);
 minute = ['0',num2str(dt.Minute)]; minute = minute(end-1:end);
 seconds = ['0',num2str(dt.Second)]; seconds = seconds(end-1:end);
 time = [hour,minute,seconds];
 
+% Dicom tags
 dcmhead.Filename = fname;
 dcmhead.FileModDate = parameters.date;
 dcmhead.FileSize = dimy*dimx*2;
@@ -122,16 +138,16 @@ dcmhead.NumberOfAverages = parameters.NO_AVERAGES;
 dcmhead.ImagedNucleus = '1H';
 dcmhead.MagneticFieldStrength = 7;
 dcmhead.SpacingBetweenSlices = parameters.SLICE_SEPARATION/parameters.SLICE_INTERLEAVE;
-dcmhead.EchoTrainLength = parameters.NO_ECHOES;
+dcmhead.EchoTrainLength = 1;
 dcmhead.DeviceSerialNumber = '0034';
 dcmhead.PlateID = '';
 dcmhead.SoftwareVersion = '1.0.0.0';
 dcmhead.ProtocolName = '';
 dcmhead.SpatialResolution = [];
-dcmhead.TriggerTime = 0;    
+dcmhead.TriggerTime = (j-1)*parameters.frametime;    
 dcmhead.DistanceSourceToDetector = [];
 dcmhead.DistanceSourceToPatient = [];
-dcmhead.FieldofViewDimensions = [aspectratio*parameters.FOV parameters.FOV parameters.SLICE_THICKNESS];
+dcmhead.FieldofViewDimensions = [FOVx FOVy parameters.SLICE_THICKNESS];
 dcmhead.ExposureTime = [];
 dcmhead.XrayTubeCurrent = [];
 dcmhead.Exposure = [];
@@ -162,14 +178,14 @@ dcmhead.SeriesInstanceUID = [dcmid(1:18),'.',num2str(studyname)];
 dcmhead.StudyID = '01';
 dcmhead.SeriesNumber = studyname;
 dcmhead.AcquisitionNumber = 1;
-dcmhead.InstanceNumber = i;          
-dcmhead.ImagePositionPatient = [-(aspectratio*parameters.FOV/2), -parameters.FOV/2 (i-round(parameters.NO_SLICES/2))*(parameters.SLICE_SEPARATION/parameters.SLICE_INTERLEAVE)]';
+dcmhead.InstanceNumber = cnt;          
+dcmhead.ImagePositionPatient = [-(FOVx/2) -FOVy/2 (i-round(parameters.NO_SLICES/2))*(parameters.SLICE_SEPARATION/parameters.SLICE_INTERLEAVE)]';
 dcmhead.ImageOrientationPatient = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]';
 dcmhead.FrameOfReferenceUID = '';
-dcmhead.TemporalPositionIdentifier = 1;
-dcmhead.NumberOfTemporalPositions = 1;
-dcmhead.TemporalResolution = parameters.tr;
-dcmhead.ImagesInAcquisition = parameters.NO_SLICES;
+dcmhead.TemporalPositionIdentifier = j;
+dcmhead.NumberOfTemporalPositions = parameters.NO_ECHOES;
+dcmhead.TemporalResolution = parameters.frametime;
+dcmhead.ImagesInAcquisition = parameters.NO_SLICES*parameters.NO_ECHOES;
 dcmhead.SliceLocation = (i-round(parameters.NO_SLICES/2))*(parameters.SLICE_SEPARATION/parameters.SLICE_INTERLEAVE);
 dcmhead.ImageComments = '';
 dcmhead.TemporalPositionIndex = uint32([]);
@@ -190,7 +206,7 @@ dcmhead.RescaleSlope = 1;
 dcmhead.HeartRate = 0;
 dcmhead.NumberOfSlices = parameters.NO_SLICES;
 dcmhead.CardiacNumberOfImages = 1;
-dcmhead.MRAcquisitionType = '2D';
+dcmhead.MRAcquisitionType = '3D';
 dcmhead.ScanOptions = 'CG';
 dcmhead.BodyPartExamined = '';
 
