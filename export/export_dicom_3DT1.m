@@ -41,7 +41,7 @@ for j = 1:nr_frames             % for all frames / temporal positions
         fn = fn(size(fn,2)-4:size(fn,2));
         
         % Dicom filename
-        fname = [directory,filesep,'T1map-DICOM-',tag,filesep,'T1map_',fn,'.dcm'];
+        fname = [directory,filesep,'T1map-DICOM-',tag,filesep,fn,'.dcm'];
         
         % T1 images
         image = rot90(squeeze(cast(round(t1map(j,:,:,i)),'uint16')));
