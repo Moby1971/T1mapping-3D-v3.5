@@ -58,6 +58,16 @@ end
 T1map(:,:)=-tr./log(b2(:,:));
 M0map(:,:)=b1(:,:)./(1-b2(:,:));
 
+% Some reasonable criteria
+T1map = abs(T1map);
+M0map = abs(M0map);
+T1map(T1map<0) = 0;
+T1map(T1map>8000) = 0;
+M0map(M0map<0) = 0;
+
+% Remove M0 outliers
+m0mean = mean(nonzeros(M0map(:)));
+M0map(M0map>5*m0mean) = 0;
 
 % Return the results
 T1out = T1map;
