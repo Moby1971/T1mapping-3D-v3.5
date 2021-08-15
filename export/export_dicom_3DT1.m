@@ -8,6 +8,10 @@ if isfield(parameters, 'PHASE_ORIENTATION')
         t1map = permute(t1map,[2 3 4 1]);
         t1map = permute(rot90(permute(t1map,[2 1 3 4]),1),[2 1 3 4]);
         t1map = permute(t1map,[4 1 2 3]);
+        
+        m0map = permute(m0map,[2 3 4 1]);
+        m0map = permute(rot90(permute(m0map,[2 1 3 4]),1),[2 1 3 4]);
+        m0map = permute(m0map,[4 1 2 3]);
     end
 end
 
@@ -42,6 +46,9 @@ for j = 1:nr_frames             % for all frames / temporal positions
         
         % Generate dicom header from scratch
         dcm_header = generate_dicomheader_3DT1(parameters,dimx,dimy,i,j,dcmid,cnt);
+        dcm_header.ProtocolName = 'T1-map';
+        dcm_header.SequenceName = 'T1-map';
+        dcm_header.EchoTime = 0;
         fn = ['0000',num2str(cnt)];
         fn = fn(size(fn,2)-4:size(fn,2));
         
@@ -90,6 +97,9 @@ for j = 1:nr_frames             % for all frames / temporal positions
         
         % Generate dicom header from scratch
         dcm_header = generate_dicomheader_3DT1(parameters,dimx,dimy,i,j,dcmid,cnt);
+        dcm_header.ProtocolName = 'M0-map';
+        dcm_header.SequenceName = 'M0-map';
+        dcm_header.EchoTime = 1;
         fn = ['0000',num2str(cnt)];
         fn = fn(size(fn,2)-4:size(fn,2));
         

@@ -47,6 +47,9 @@ for j = 1:nr_frames         % for all temporal positions
         
         % Generate new dicom header from existing header
         dcm_header = generate_dicomheader_3DT1_dcm(base_header,parameters,dimx,dimy,i,j,cnt);
+        dcm_header.ProtocolName = 'T1-map';
+        dcm_header.SequenceName = 'T1-map';
+        dcm_header.EchoTime = 0;
         
         % Filename
         fn = ['000000',num2str(cnt)];
@@ -98,6 +101,9 @@ for j = 1:nr_frames         % for all temporal positions
         
         % Generate new dicom header from existing header
         dcm_header = generate_dicomheader_3DT1_dcm(base_header,parameters,dimx,dimy,i,j,cnt);
+        dcm_header.ProtocolName = 'M0-map';
+        dcm_header.SequenceName = 'M0-map';
+        dcm_header.EchoTime = 1;
         
         % Filename
         fn = ['000000',num2str(cnt)];
