@@ -1,4 +1,4 @@
-function [T1out,M0out] = dotheT1fit_despot(input,mask,fa,tr)
+function [T1out,M0out] = dotheT1fit_despot(input,mask,fa,tr,B1map,B1flag)
 
 
 % Performs the T1 map fitting for 1 slice
@@ -18,13 +18,18 @@ b2 = zeros(dimx,dimy);
 % Flip angles
 fa = fa'*pi/180;
 
-
 % Despot T1 linearization
-for i = 1:nrfa
-   inputx(:,:,i) = input(i,:,:)/tan(fa(i));
-   inputy(:,:,i) = input(i,:,:)/sin(fa(i)); 
+if B1flag
+    for i = 1:nrfa
+        inputx(:,:,i) = squeeze(input(i,:,:))./tan(fa(i)./B1map(:,:));
+        inputy(:,:,i) = squeeze(input(i,:,:))./sin(fa(i)./B1map(:,:));
+    end
+else
+    for i = 1:nrfa
+        inputx(:,:,i) = input(i,:,:)/tan(fa(i));
+        inputy(:,:,i) = input(i,:,:)/sin(fa(i));
+    end
 end
-
 
 
 parfor j=1:dimx
