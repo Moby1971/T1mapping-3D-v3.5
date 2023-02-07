@@ -5,11 +5,10 @@ function export_gif_3DT1(app,parameters,gifexportpath,t1map,m0map,tag,T1MapScale
 
 [nr_frames,dimx,dimy,dimz] = size(t1map);
 
-
 % increase the size of the matrix to make the exported images bigger
 
 numrows = 4*dimx;
-numcols = 4*round(dimy/aspect);
+numcols = 4*round(dimy*aspect);
 delay_time = 5/dimz;  % show all gifs in 2 seconds
 
 
@@ -24,7 +23,7 @@ for idc = 1:nr_frames
         % because the color maps are arrays of size 256
         % the T1-map needs to be mapped onto the range of [0, 255] and cast in an
         % unsigned integer 8 for gif export
-        image = uint8(round((255/T1MapScale)*resizem(squeeze(t1map(idc,:,:,idx)),[numrows numcols])));
+        image = uint8(round((255/T1MapScale)*resizem(squeeze(t1map(idc,:,:,idx)),[numrows numcols]))); %#ok<*RESZM> 
         
         if isfield(parameters, 'PHASE_ORIENTATION')
             if parameters.PHASE_ORIENTATION
@@ -52,7 +51,7 @@ for idc = 1:nr_frames
         
         % determine a convenient scale to display M0 maps (same as in the app)
         m0scale = round(2*mean(nonzeros(squeeze(m0map(idc,:,:,idx)))));
-        if isnan(m0scale) m0scale = 100; end
+        m0scale(isnan(m0scale)) = 100;
         
         % automatic grayscale mapping is used for the gif export
         % the m0map therefore needs to be mapped onto the range of [0 255]
