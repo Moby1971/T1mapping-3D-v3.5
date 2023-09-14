@@ -1,4 +1,4 @@
-function export_gif_3DT1(app,parameters,gifexportpath,t1map,m0map,tag,T1MapScale,t1cmap,aspect)
+function export_gif_3DT1(app,parameters,gifExportPath,t1map,m0map,tag,T1MapScale,t1cmap,aspect)
 
 
 % Exports 3D t1maps and m0maps to animated gif
@@ -10,6 +10,11 @@ function export_gif_3DT1(app,parameters,gifexportpath,t1map,m0map,tag,T1MapScale
 numrows = 4*dimx;
 numcols = 4*round(dimy*aspect);
 delay_time = 5/dimz;  % show all gifs in 2 seconds
+
+% Create folder if not exist
+if (~exist(gifExportPath, 'dir')) 
+    mkdir(gifExportPath); 
+end
 
 
 % Export the T1 maps to gifs
@@ -32,9 +37,9 @@ for idc = 1:nr_frames
         end
         
         if idx == 1
-            imwrite(rot90(image),t1cmap,[gifexportpath,filesep,'T1map_frame_',num2str(idc),'_',tag,'.gif'],'DelayTime',delay_time,'LoopCount',inf);
+            imwrite(rot90(image),t1cmap,strcat(gifExportPath,filesep,'T1map_frame_',num2str(idc),'_',tag,'.gif'),'DelayTime',delay_time,'LoopCount',inf);
         else
-            imwrite(rot90(image),t1cmap,[gifexportpath,filesep,'T1map_frame_',num2str(idc),'_',tag,'.gif'],'WriteMode','append','DelayTime',delay_time);
+            imwrite(rot90(image),t1cmap,strcat(gifExportPath,filesep,'T1map_frame_',num2str(idc),'_',tag,'.gif'),'WriteMode','append','DelayTime',delay_time);
         end
     end
     
@@ -64,9 +69,9 @@ for idc = 1:nr_frames
         end
         
         if idx == 1
-            imwrite(rot90(image),[gifexportpath,filesep,'M0map_frame_',num2str(idc),'_',tag,'.gif'],'DelayTime',delay_time,'LoopCount',inf);
+            imwrite(rot90(image),strcat(gifExportPath,filesep,'M0map_frame_',num2str(idc),'_',tag,'.gif'),'DelayTime',delay_time,'LoopCount',inf);
         else
-            imwrite(rot90(image),[gifexportpath,filesep,'M0map_frame_',num2str(idc),'_',tag,'.gif'],'WriteMode','append','DelayTime',delay_time);
+            imwrite(rot90(image),strcat(gifExportPath,filesep,'M0map_frame_',num2str(idc),'_',tag,'.gif'),'WriteMode','append','DelayTime',delay_time);
         end
     end
     
