@@ -28,7 +28,7 @@ for idc = 1:nr_frames
         % because the color maps are arrays of size 256
         % the T1-map needs to be mapped onto the range of [0, 255] and cast in an
         % unsigned integer 8 for gif export
-        image = uint8(round((255/T1MapScale)*resizem(squeeze(t1map(idc,:,:,idx)),[numrows numcols]))); %#ok<*RESZM> 
+        image = uint8(round((255/T1MapScale)*imresize(squeeze(t1map(idc,:,:,idx)),[numrows numcols]))); %#ok<*RESZM> 
         
         if isfield(parameters, 'PHASE_ORIENTATION')
             if parameters.PHASE_ORIENTATION
@@ -60,7 +60,7 @@ for idc = 1:nr_frames
         
         % automatic grayscale mapping is used for the gif export
         % the m0map therefore needs to be mapped onto the range of [0 255]
-        image = uint8(round((255/m0scale)*resizem(squeeze(m0map(idc,:,:,idx)),[numrows numcols])));
+        image = uint8(round((255/m0scale)*imresize(squeeze(m0map(idc,:,:,idx)),[numrows numcols])));
         
         if isfield(parameters, 'PHASE_ORIENTATION')
             if parameters.PHASE_ORIENTATION

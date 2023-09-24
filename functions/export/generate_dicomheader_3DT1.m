@@ -11,7 +11,7 @@ function dicom_header = generate_dicomheader_3DT1(parameters,dimx,dimy,i,j,dcmid
 %
 
 % Study name
-studyname = str2num(parameters.filename(end-9:end-6));
+studyname = str2num(parameters.filename(end-9:end-6)); %#ok<ST2NM> 
 
 % Phase orientation FOV dimensions correction
 if isfield(parameters, 'PHASE_ORIENTATION')
@@ -36,7 +36,7 @@ fn = fn(size(fn,2)-4:size(fn,2));
 fname = ['T1map_',fn,'.dcm'];
 
 % Date
-dt = datetime(parameters.date,'InputFormat','dd-MMM-yyyy HH:mm:ss');
+dt = parameters.datetime;
 year = num2str(dt.Year);
 month = ['0',num2str(dt.Month)]; month = month(end-1:end);
 day = ['0',num2str(dt.Day)]; day = day(end-1:end);

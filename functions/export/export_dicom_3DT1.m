@@ -15,6 +15,8 @@ if isfield(parameters, 'PHASE_ORIENTATION')
     end
 end
 
+% Date and time
+parameters.datetime = datetime(parameters.date,'InputFormat','dd-MMM-yyyy HH:mm:ss');
 
 % Size of the M0 and T1 maps
 [nr_frames,dimx,dimy,dimz] = size(t1map);
@@ -27,14 +29,15 @@ end
 
 
 % Create folder if not exist, and clear
-folder_name = [directory,[filesep,'T1map-DICOM-',tag]];
-if (~exist(folder_name, 'dir')); mkdir(folder_name); end
-delete([folder_name,filesep,'*']);
+folder_name = strcat(directory,filesep,'T1map-DICOM-',tag);
+if ~exist(folder_name, 'dir')
+    mkdir(folder_name); 
+end
+delete(strcat(folder_name,filesep,'*'));
 
 
 
 % Export
-
 dcmid = dicomuid;   % unique identifier
 dcmid = dcmid(1:50);
 
@@ -45,21 +48,20 @@ for j = 1:nr_frames             % for all frames / temporal positions
     for i = 1:dimz              % for all slices
         
         % Generate dicom header from scratch
-        dcm_header = generate_dicomheader_3DT1(parameters,dimx,dimy,i,j,dcmid,cnt);
-        dcm_header.ProtocolName = 'T1-map';
-        dcm_header.SequenceName = 'T1-map';
-        dcm_header.EchoTime = 0;
-        fn = ['0000',num2str(cnt)];
+        dcmHeader = generate_dicomheader_3DT1(parameters,dimx,dimy,i,j,dcmid,cnt);
+        dcmHeader.ProtocolName = 'T1-map';
+        dcmHeader.SequenceName = 'T1-map';
+        fn = strcat('0000',num2str(cnt));
         fn = fn(size(fn,2)-4:size(fn,2));
         
         % Dicom filename
-        fname = [directory,filesep,'T1map-DICOM-',tag,filesep,fn,'.dcm'];
+        fname = strcat(directory,filesep,'T1map-DICOM-',tag,filesep,fn,'.dcm');
         
         % T1 images
         image = rot90(squeeze(cast(round(t1map(j,:,:,i)),'uint16')));
         
         % Write the dicom file
-        dicomwrite(image, fname, dcm_header);
+        dicomwrite(image, fname, dcmHeader);
         
         cnt = cnt + 1;
         
@@ -75,9 +77,11 @@ end
 % ------------------------
 
 % Create folder if not exist, and clear
-folder_name = [directory,[filesep,'M0map-DICOM-',tag]];
-if (~exist(folder_name, 'dir')); mkdir(folder_name); end
-delete([folder_name,filesep,'*']);
+folder_name = strcat(directory,filesep,'M0map-DICOM-',tag);
+if ~exist(folder_name, 'dir')
+    mkdir(folder_name); 
+end
+delete(strcat(folder_name,filesep,'*'));
 
 % Scale
 while max(m0map(:))>65535
@@ -89,6 +93,8 @@ end
 dcmid = dicomuid;   % unique identifier
 dcmid = dcmid(1:50);
 
+parameters.datetime = parameters.datetime + minutes(10);
+
 cnt = 1;
 
 for j = 1:nr_frames             % for all frames / temporal positions
@@ -96,21 +102,20 @@ for j = 1:nr_frames             % for all frames / temporal positions
     for i = 1:dimz              % for all slices
         
         % Generate dicom header from scratch
-        dcm_header = generate_dicomheader_3DT1(parameters,dimx,dimy,i,j,dcmid,cnt);
-        dcm_header.ProtocolName = 'M0-map';
-        dcm_header.SequenceName = 'M0-map';
-        dcm_header.EchoTime = 1;
-        fn = ['0000',num2str(cnt)];
+        dcmHeader = generate_dicomheader_3DT1(parameters,dimx,dimy,i,j,dcmid,cnt);
+        dcmHeader.ProtocolName = 'M0-map';
+        dcmHeader.SequenceName = 'M0-map';
+        fn = strcat('0000',num2str(cnt));
         fn = fn(size(fn,2)-4:size(fn,2));
         
         % Dicom filename
-        fname = [directory,filesep,'M0map-DICOM-',tag,filesep,fn,'.dcm'];
+        fname = strcat(directory,filesep,'M0map-DICOM-',tag,filesep,fn,'.dcm');
         
         % M0 images
         image = rot90(squeeze(cast(round(m0map(j,:,:,i)),'uint16')));
         
         % Write the dicom file
-        dicomwrite(image, fname, dcm_header);
+        dicomwrite(image, fname, dcmHeader);
         
         cnt = cnt + 1;
         
