@@ -161,8 +161,12 @@ catch ME
 
 end
 
-app.EstimatedRegTimeViewField.Value = 'Finished ...';
+
+% Renormalize
+imagesIn = 32767*imagesIn/max(imagesIn(:));
 
 app.image5D = imagesIn;
+
+app.EstimatedRegTimeViewField.Value = 'Finished ...';
 
 end
