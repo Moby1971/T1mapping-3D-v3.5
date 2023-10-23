@@ -22,7 +22,6 @@ parameters.datetime = datetime(parameters.date,'InputFormat','dd-MMM-yyyy HH:mm:
 [nr_frames,dimx,dimy,dimz] = size(t1map);
 
 
-
 % ------------------------
 % Export T1 map images
 % ------------------------
@@ -34,7 +33,6 @@ if ~exist(folder_name, 'dir')
     mkdir(folder_name); 
 end
 delete(strcat(folder_name,filesep,'*'));
-
 
 
 % Export

@@ -106,7 +106,7 @@ function out = uipickfiles(varargin)
 %
 % is valid usage.
 
-
+beep off;
 
 % Define properties and set default values.
 prop.filterspec = '*';

@@ -16,7 +16,7 @@ if ispc
     % a bug in Matlab).
 
     setenv('LD_LIBRARY_PATH', '');
-
+     
     % Decided to use c:\temp as temp directory. Hopefully this prevents issues
     try
         name = strcat(tempname('C:\tmp'),filesep);
@@ -24,7 +24,7 @@ if ispc
             mkdir(name);
         end
     catch
-        % Second chance if C:\tmp cannot be created or written
+        % Second chance if C:\tmp cannot be created
         name = strrep(tempname,' ','_');   % Windows user names with spaces give problems, replace with underscore
     end
 
@@ -74,6 +74,7 @@ if ispc
     end
 
     for i=1:nargout
+
         if ERR==0
             if contains(cmd,"estdelay") || contains(cmd,"-Rh") || contains(cmd,"version") 
                 varargout{1} = cmdout;
@@ -81,12 +82,14 @@ if ispc
                 varargout{i} = readcfl(out{i});
             end
         end
+
         if (exist(strcat(out{i}, '.cfl'),'file'))
             delete(strcat(out{i}, '.cfl'));
         end
         if (exist(strcat(out{i}, '.hdr'),'file'))
             delete(strcat(out{i}, '.hdr'));
         end
+
     end
 
     if ERR~=0

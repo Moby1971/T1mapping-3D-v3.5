@@ -11,12 +11,14 @@ app.TextMessage('Reading MRD file ...');
 if contains(fName,'retro') || contains(fName,'p2roud')
 
     % Retrospective or P2ROUD scan, only 1 file
-    [data,~,app.parameters] = Get_mrd_3D4(mrdfile,'seq','seq');
+    [data{1},~,app.parameters] = Get_mrd_3D4(mrdfile,'seq','seq');
     if isfield(app.parameters,'pe2_centric_on')
         if app.parameters.pe2_centric_on
             [data{1},~,app.parameters] = Get_mrd_3D4(mrdfile,'seq','cen');
         end
     end
+
+    numCoils = 1;
 
 else
 
@@ -43,12 +45,12 @@ else
     if isfield(app.parameters,'pe2_centric_on')
         if ~app.parameters.pe2_centric_on
             for coil = 1:numCoils
-                [data{coil},~,app.parameters] = Get_mrd_3D4([flist(coil).folder,filesep,flist(coil).name],'seq','seq'); %#ok<AGROW>
+                [data{coil},~,app.parameters] = Get_mrd_3D4([flist(coil).folder,filesep,flist(coil).name],'seq','seq'); 
             end
         else
             if numCoils > 1
                 for coil = 2:length(flist)
-                    [data{coil},~,app.parameters] = Get_mrd_3D4([flist(coil).folder,filesep,flist(coil).name],'seq','cen'); %#ok<AGROW>
+                    [data{coil},~,app.parameters] = Get_mrd_3D4([flist(coil).folder,filesep,flist(coil).name],'seq','cen'); 
                 end
             end
         end
@@ -69,7 +71,7 @@ if isfield(app.parameters,'VFA_size')
                 if isfield(app.parameters,'NO_ECHOES')
                     if app.parameters.NO_ECHOES == 1
                         for coil = 1:numCoils
-                            data{coil} = permute(data{coil},[1 5 2 3 4]);
+                            data{coil} = permute(data{coil},[1 5 2 3 4]); %#ok<*AGROW>
                         end
                     end
                 else

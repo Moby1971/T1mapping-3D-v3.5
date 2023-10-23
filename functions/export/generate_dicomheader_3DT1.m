@@ -11,7 +11,12 @@ function dicom_header = generate_dicomheader_3DT1(parameters,dimx,dimy,i,j,dcmid
 %
 
 % Study name
-studyname = str2num(parameters.filename(end-9:end-6)); %#ok<ST2NM> 
+if length(parameters.filename) > 9
+    studyname = str2num(parameters.filename(end-9:end-6)); %#ok<ST2NM>
+else
+    studyname = 111;
+end
+
 
 % Phase orientation FOV dimensions correction
 if isfield(parameters, 'PHASE_ORIENTATION')
