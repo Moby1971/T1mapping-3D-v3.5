@@ -1,7 +1,7 @@
 function err = importBfile(app, mrdFiles)
 
 try
-    
+
     err = 0;
     app.mrdImportPath = fileparts(mrdFiles{1});
     today = datetime;
@@ -15,7 +15,12 @@ try
     for fn = 1:numFiles
 
         % Read the methods file
-        [importPath,~] = fileparts([mrdFiles{fn},filesep]);
+        if contains(mrdFiles{fn},"job0")
+            [importPath,~] = fileparts(mrdFiles{fn});
+        else
+            [importPath,~] = fileparts([mrdFiles{fn},filesep]);
+        end
+
         methodFile = [importPath,filesep,'method'];
         if ~isfile(methodFile)
             ME = MException('importBfile:invalidfile','Method files does not exist ...');
@@ -115,7 +120,11 @@ try
 
     % Flip angles
     for fn = 1:numFiles
-        [importPath,~] = fileparts([mrdFiles{fn},filesep]);
+        if contains(mrdFiles{fn},"job0")
+            [importPath,~] = fileparts(mrdFiles{fn});
+        else
+            [importPath,~] = fileparts([mrdFiles{fn},filesep]);
+        end
         flist = dir([importPath,filesep,'pdata',filesep,'1',filesep,'dicom',filesep,'*.dcm']);
         if isempty(flist)
             ME = MException('importBfile:invalidfile','Dicom file not found ...');
@@ -133,7 +142,11 @@ try
     % Read the 2d-seq data, x y flip-angle echos slices
     for fn = 1:numFiles
         try
-            [importPath,~] = fileparts([mrdFiles{fn},filesep]);
+            if contains(mrdFiles{fn},"job0")
+                [importPath,~] = fileparts(mrdFiles{fn});
+            else
+                [importPath,~] = fileparts([mrdFiles{fn},filesep]);
+            end
             [img{fn},hdr{fn}] = read2dseq([importPath,filesep,'pdata',filesep,'1',filesep]);
             % Image = image * scl_slope + scl_inter;
             img{fn} = abs(img{fn})*hdr{fn}.scl_slope + hdr{fn}.scl_inter;
