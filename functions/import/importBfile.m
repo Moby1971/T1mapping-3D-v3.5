@@ -142,14 +142,22 @@ try
     % Read the 2d-seq data, x y flip-angle echos slices
     for fn = 1:numFiles
         try
+
             if contains(mrdFiles{fn},"job0")
                 [importPath,~] = fileparts(mrdFiles{fn});
             else
                 [importPath,~] = fileparts([mrdFiles{fn},filesep]);
             end
+
             [img{fn},hdr{fn}] = read2dseq([importPath,filesep,'pdata',filesep,'1',filesep]);
+         
             % Image = image * scl_slope + scl_inter;
-            img{fn} = abs(img{fn})*hdr{fn}.scl_slope + hdr{fn}.scl_inter;
+            try
+                img{fn} = double(abs(img{fn}))*hdr{fn}.scl_slope + hdr{fn}.scl_inter;
+            catch
+                img{fn} = double(abs(img{fn}));
+            end
+
         catch
             ME = MException('importBfile:invalidfile','Error reading 2dseq file ...');
             throw(ME);
@@ -469,10 +477,39 @@ end
                     VisuCoreOrientation = (sscanf(visu_pars(idx_end(idx)+find_newline(visu_pars,idx_end(idx))+1:idx_end(idx)+find_newline(visu_pars,idx_end(idx))+19*9),'%f %f %f %f %f %f %f %f %f',[3 3]))';
                 case 'VisuCorePosition'
                     VisuCorePosition = sscanf(visu_pars(idx_end(idx)+find_newline(visu_pars,idx_end(idx))+1:idx_end(idx)+find_newline(visu_pars,idx_end(idx))+19*3),'%f %f %f',3);
+            
                 case 'VisuCoreDataOffs'
                     hdr.scl_inter = sscanf(visu_pars(idx_end(idx)+find_newline(visu_pars,idx_end(idx))+1:idx_end(idx)+find_newline(visu_pars,idx_end(idx))+19*1),'%f',1);
+                    try
+                        if isempty(hdr.scl_inter)
+                            tmpv = visu_pars(idx_end(idx)+find_newline(visu_pars,idx_end(idx))+1:idx_end(idx)+find_newline(visu_pars,idx_end(idx))+19*1);
+                            k1 = strfind(tmpv,'(');
+                            k2 = strfind(tmpv,')');
+                            if isempty(k2)
+                                k2 = 2;
+                            end
+                            hdr.scl_inter = str2num(tmpv(k1+1:k2-1));
+                        end
+                    catch
+                        hdr_scl_inter = 0;
+                    end
+
                 case 'VisuCoreDataSlope'
                     hdr.scl_slope = (sscanf(visu_pars(idx_end(idx)+find_newline(visu_pars,idx_end(idx))+1:idx_end(idx)+find_newline(visu_pars,idx_end(idx))+19*1),'%f',1));
+                    try
+                        if isempty(hdr.scl_slope)
+                            tmpv = visu_pars(idx_end(idx)+find_newline(visu_pars,idx_end(idx))+1:idx_end(idx)+find_newline(visu_pars,idx_end(idx))+19*1);
+                            k1 = strfind(tmpv,'(');
+                            k2 = strfind(tmpv,')');
+                            if isempty(k2)
+                                k2 = k1+6;
+                            end
+                            hdr.scl_slope = str2num(tmpv(k1+1:k2-1));
+                        end
+                    catch
+                        hdr.scl_slope = 1;
+                    end
+            
                 case 'VisuCoreWordType'
                     VisuCoreWordType = visu_pars(idx_end(idx)+1:idx_end(idx)+find_newline(visu_pars,idx_end(idx))-1);
                 case 'VisuCoreSlicePacksSlices'
