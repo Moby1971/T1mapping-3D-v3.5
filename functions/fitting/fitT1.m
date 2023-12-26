@@ -10,6 +10,16 @@ totalNumberOfSteps = nrFrames*nrSlices;
 app.FitProgressGauge.Value = 0;
 app.abortFitFlag = false;
 
+% Initialize the fit image slices and frame sliders
+app.FitOrientationSpinner.Value = 1;
+app.FitSliceEditField.Value = 1;
+app.FitSliceSlider.Value = 1;
+app.FitSliceEditField.Limits = [1 size(app.imageT1,app.maskOrient(app.FitOrientationSpinner.Value,4))];
+app.FitSliceSlider.Limits = [1 size(app.imageT1,app.maskOrient(app.FitOrientationSpinner.Value,4))];
+app.FitFrameEditField.Value = 1;
+app.FitFrameSlider.Value = 1;
+app.MaxT1EditField.Limits = [1 32767];
+
 
 % Timing parameters
 app.EstimatedFitTimeViewField.Value = 'Calculating ...';
@@ -35,6 +45,17 @@ while slice < nrSlices && ~app.abortFitFlag
         % Fit function
         [app.imageT1(frame,:,:,slice),app.imageM0(frame,:,:,slice)] = fitT1despot(squeeze(app.image5D(:,frame,:,:,slice)), ...
             squeeze(app.mask(frame,:,:,slice)), app.flipAngles, app.parameters.tr, squeeze(app.imageB1(:,:,slice)), app.B1MapCheckBox.Value);
+
+        % Plot the intermediate maps
+        mx = round(max(app.imageT1(:)));
+        mx(mx<200) = 200;
+        mx(mx>3000) = 3000;
+        app.MaxT1EditField.Value = mx;
+        app.FitSliceEditField.Value = slice;
+        app.FitSliceSlider.Value = slice;
+        app.validFitFlag = true;
+        app.PlotMaps;
+        app.validFitFlag = false;
 
         % Update the fit progress gauge
         app.FitProgressGauge.Value = round(100*(cnt/totalNumberOfSteps));
