@@ -1,4 +1,4 @@
-function export_gif_3DT1(app,parameters,gifExportPath,t1map,m0map,tag,T1MapScale,t1cmap,aspect)
+function export_gif_3DT1(app,parameters,gifExportBase,t1map,m0map,tag,T1MapScale,t1cmap,aspect)
 
 
 % Exports 3D t1maps and m0maps to animated gif
@@ -11,17 +11,24 @@ numrows = 4*dimx;
 numcols = 4*round(dimy*aspect);
 delay_time = 5/dimz;  % show all gifs in 2 seconds
 
-% Create folder if not exist
-if (~exist(gifExportPath, 'dir')) 
-    mkdir(gifExportPath); 
+
+% Create new directory
+ready = false;
+cnt = 1;
+while ~ready
+    gifExportPath = strcat(gifExportBase,tag,'T1',filesep,num2str(cnt),filesep);
+    if ~exist(gifExportPath, 'dir')
+        mkdir(gifExportPath);
+        ready = true;
+    end
+    cnt = cnt + 1;
 end
 
+app.TextMessage(strcat("GIF export folder = ",gifExportPath," ..."));
 
 % Export the T1 maps to gifs
 
 for idc = 1:nr_frames
-    
-    app.TextMessage(strcat('GIF export T1-map frame',{' '},num2str(idc)));
     
     for idx = 1:dimz
         
@@ -50,8 +57,6 @@ end
 
 for idc = 1:nr_frames
     
-    app.TextMessage(strcat('GIF export M0-map frame',{' '},num2str(idc)));
-    
     for idx = 1:dimz
         
         % determine a convenient scale to display M0 maps (same as in the app)
@@ -77,6 +82,10 @@ for idc = 1:nr_frames
     
 end
 
+
+% Export GUI to png
+app.RawImagesTabGroup.SelectedTab = app.RawimagesTab;
+exportapp(app.T1mappUIFigure,strcat(gifExportPath,filesep,"T1mapping.png"));
 
 
 end
