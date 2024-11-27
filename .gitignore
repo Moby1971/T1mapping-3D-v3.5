@@ -19,3 +19,10 @@ functions/reconstruction/fft3reco.m
 functions/reconstruction/zerofill5D.m
 functions/registration/registerImages.m
 functions/segment/apply_threshold_3D.m
+functions/export/niftii/dicm_img.m
+functions/export/export_nifti_3DT1.m
+functions/export/niftii/dicm2nii.m
+functions/export/niftii/dicm_dict.m
+functions/export/niftii/dicm_hdr.m
+functions/export/niftii/dicm_save.m
+functions/export/niftii/nii_tool.m
